@@ -1,5 +1,15 @@
-FROM amazoncorretto:21
+FROM amazoncorretto:19-alpine-jdk as build
 
-WORKDIR /java-test
+WORKDIR /app/
 
-ENTRYPOINT [ "bash" ]   
+COPY volumen/Main.java /app/Main.java
+
+RUN javac Main.java
+
+FROM amazoncorretto:19-alpine-jdk as execute
+
+WORKDIR /app/
+
+COPY --from=build /app/Main.class /app/Main.class
+
+ENTRYPOINT [ "java", "Main" ]   
